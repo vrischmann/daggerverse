@@ -81,7 +81,10 @@ func (m *Zig) Container(ctx context.Context,
 
 	//
 
-	ctr := dag.Container().
+	ctr := dag.
+		Container(dagger.ContainerOpts{
+			Platform: platform,
+		}).
 		From("debian:bookworm-slim").
 		WithWorkdir("/app").
 		// Fetch and install zig
