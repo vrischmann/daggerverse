@@ -58,6 +58,8 @@ func platformToZigPlatform(platform dagger.Platform) (string, error) {
 	switch platform {
 	case "linux/amd64":
 		return "x86_64-linux", nil
+	case "linux/arm64":
+		return "aarch64-linux", nil
 	default:
 		return "", fmt.Errorf("invalid platform %q", platform)
 	}
