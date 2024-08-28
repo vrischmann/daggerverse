@@ -68,7 +68,7 @@ func platformToZigPlatform(platform dagger.Platform) (string, error) {
 	}
 }
 
-func (m *Zig) Builder(ctx context.Context,
+func (m *Zig) Container(ctx context.Context,
 	// +optional
 	// +default="linux/amd64"
 	platform dagger.Platform,
