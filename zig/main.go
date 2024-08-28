@@ -91,10 +91,13 @@ func (m *Zig) Container(ctx context.Context,
 		WithExec([]string{"tar", "xJf", "zig.tar.xz"}).
 		WithExec([]string{"mv", zigMaster.FileName, "zig-master"}).
 		// Create a user and switch to it
-		// WithExec([]string{"addgroup", "--gid", "1001", "zig"}).
+		WithExec([]string{"addgroup", "--gid", "1001", "zig"}).
 		WithExec([]string{"adduser", "--gid", "100", "--uid", "1001", "zig"}).
-		WithUser("zig").
-		WithMountedCache("/home/zig/.cache/zig", dag.CacheVolume("global-zig-cache")).
+		WithUser("zig:zig").
+		WithMountedCache("/home/zig/.cache/zig", dag.CacheVolume("global-zig-cache"), dagger.ContainerWithMountedCacheOpts{
+			Owner:   "zig:zig",
+			Sharing: dagger.Locked,
+		}).
 		WithEnvVariable("PATH", "/usr/bin:/usr/sbin:/bin:/sbin:/app/zig-master")
 
 	return ctr, nil
