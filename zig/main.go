@@ -84,12 +84,17 @@ func (m *Zig) Container(ctx context.Context,
 	ctr := dag.Container().
 		From("debian:bookworm-slim").
 		WithWorkdir("/app").
-		WithMountedCache("/root/.cache/zig", dag.CacheVolume("root-zig-cache")).
+		// Fetch and install zig
 		WithExec([]string{"apt-get", "update"}).
 		WithExec([]string{"apt-get", "install", "-y", "curl", "xz-utils"}).
 		WithExec([]string{"curl", "-J", "-o", "zig.tar.xz", zigMaster.Tarball}).
 		WithExec([]string{"tar", "xJf", "zig.tar.xz"}).
 		WithExec([]string{"mv", zigMaster.FileName, "zig-master"}).
+		// Create a user and switch to it
+		// WithExec([]string{"addgroup", "--gid", "1001", "zig"}).
+		WithExec([]string{"adduser", "--gid", "100", "--uid", "1001", "zig"}).
+		WithUser("zig").
+		WithMountedCache("/home/zig/.cache/zig", dag.CacheVolume("global-zig-cache")).
 		WithEnvVariable("PATH", "/usr/bin:/usr/sbin:/bin:/sbin:/app/zig-master")
 
 	return ctr, nil
