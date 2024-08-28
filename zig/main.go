@@ -68,6 +68,7 @@ func platformToZigPlatform(platform dagger.Platform) (string, error) {
 	}
 }
 
+// Returns a Debian-based container with Zig installed and available in PATH
 func (m *Zig) Container(ctx context.Context,
 	// +optional
 	// +default="linux/amd64"
@@ -93,7 +94,8 @@ func (m *Zig) Container(ctx context.Context,
 		WithExec([]string{"apt-get", "install", "-y", "curl", "xz-utils"}).
 		WithExec([]string{"curl", "-J", "-o", "zig.tar.xz", zigMaster.Tarball}).
 		WithExec([]string{"tar", "xJf", "zig.tar.xz"}).
-		WithExec([]string{"mv", zigMaster.FileName, "zig-master"})
+		WithExec([]string{"mv", zigMaster.FileName, "zig-master"}).
+		WithEnvVariable("PATH", "/usr/bin:/usr/sbin:/bin:/sbin:/app/zig-master")
 
 	return ctr, nil
 }
