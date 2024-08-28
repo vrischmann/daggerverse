@@ -22,7 +22,12 @@ type ZigMaster struct {
 }
 
 func getZigMaster(ctx context.Context, platform string) (ZigMaster, error) {
-	resp, err := http.Get("https://ziglang.org/download/index.json")
+	req, err := http.NewRequestWithContext(ctx, "GET", "https://ziglang.org/download/index.json", nil)
+	if err != nil {
+		return ZigMaster{}, fmt.Errorf("unable to create request for zig download index, err: %w", err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return ZigMaster{}, fmt.Errorf("unable to download zig download index, err: %w", err)
 	}
